@@ -131,6 +131,10 @@ const projectConfig = {
   store_cors: STORE_CORS,
   admin_cors: ADMIN_CORS,
   redis_url: REDIS_URL
+  http: {
+    port: process.env.PORT || 9000,
+    host: '0.0.0.0'
+  },
 }
 
 // ADMIN ROUTES
