@@ -78,14 +78,11 @@ const plugins = [
   // Email notifications
   // Email notifications
   {
-    resolve: `medusa-plugin-resend`,
+ resolve: `medusa-plugin-resend`,
     options: {
       api_key: RESEND_API_KEY,
       from: RESEND_FROM,
       template_path: RESEND_TEMPLATE_PATH,
-      user_password_reset_template: "user_password_reset",
-      customer_password_reset_template: "customer_password_reset",
-      order_placed_template: "order_placed",
       ...(RESEND_ENABLE_ENDPOINT && { enable_endpoint: RESEND_ENABLE_ENDPOINT }),
       ...(RESEND_SUBJECT_TEMPLATE_TYPE && { subject_template_type: RESEND_SUBJECT_TEMPLATE_TYPE }),
       ...(RESEND_BODY_TEMPLATE_TYPE && { body_template_type: RESEND_BODY_TEMPLATE_TYPE }),
