@@ -16,10 +16,14 @@ switch (process.env.NODE_ENV) {
     ENV_FILE_NAME = ".env";
     break;
 }
-console.log(process.env.NODE_ENV,'environment using',ENV_FILE_NAME);
 
 try {
   dotenv.config({ path: process.cwd() + "/" + ENV_FILE_NAME });
+} catch (e) {}
+
+// Fallback to standard .env if environment-specific file isn't present
+try {
+  dotenv.config({ path: process.cwd() + "/.env" });
 } catch (e) {}
 
 // CORS when consuming Medusa from admin
@@ -53,7 +57,7 @@ const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID;
 const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY;
 
 // RESEND
-const RESEND_API_KEY = process.env.RESEND_API_ID;
+const RESEND_API_KEY = process.env.RESEND_API_KEY || process.env.RESEND_API_ID;
 const RESEND_ENABLE_ENDPOINT = process.env.RESEND_ENABLE_ENDPOINT;
 const RESEND_TEMPLATE_PATH = process.env.RESEND_TEMPLATE_PATH;
 const RESEND_SUBJECT_TEMPLATE_TYPE = process.env.RESEND_SUBJECT_TEMPLATE_TYPE;
@@ -75,10 +79,10 @@ const plugins = [
     resolve: `medusa-plugin-resend`,
     options: {
       api_key: RESEND_API_KEY,
-      enable_endpoint: RESEND_ENABLE_ENDPOINT,
-      template_path: RESEND_TEMPLATE_PATH,
-      subject_template_type: RESEND_SUBJECT_TEMPLATE_TYPE,
-      body_template_type: RESEND_BODY_TEMPLATE_TYPE,
+      ...(RESEND_ENABLE_ENDPOINT && { enable_endpoint: RESEND_ENABLE_ENDPOINT }),
+      ...(RESEND_TEMPLATE_PATH && { template_path: RESEND_TEMPLATE_PATH }),
+      ...(RESEND_SUBJECT_TEMPLATE_TYPE && { subject_template_type: RESEND_SUBJECT_TEMPLATE_TYPE }),
+      ...(RESEND_BODY_TEMPLATE_TYPE && { body_template_type: RESEND_BODY_TEMPLATE_TYPE }),
     }
   },
   // File service storage - the LAST plugin declared will be used
@@ -100,7 +104,6 @@ const plugins = [
       storageZoneName: process.env.BUNNY_STORAGE_ZONE_NAME,
       storagePath: process.env.BUNNY_STORAGE_PATH,
       pullZoneDomain: process.env.BUNNY_PULL_ZONE_DOMAIN,
-
     },
   },
 ];
@@ -154,7 +157,6 @@ if (DATABASE_URL && DATABASE_TYPE === "postgres") {
   projectConfig.database_url = DATABASE_URL;
   delete projectConfig["database_database"];
 }
-
 
 /** @type {import('@medusajs/medusa').ConfigModule} */
 module.exports = {
