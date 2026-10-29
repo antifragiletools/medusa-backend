@@ -77,17 +77,26 @@ const plugins = [
   },
   // Email notifications
   // Email notifications
-  {
- resolve: `medusa-plugin-resend`,
-    options: {
-      api_key: RESEND_API_KEY,
-      from: RESEND_FROM,
-      template_path: RESEND_TEMPLATE_PATH,
-      ...(RESEND_ENABLE_ENDPOINT && { enable_endpoint: RESEND_ENABLE_ENDPOINT }),
-      ...(RESEND_SUBJECT_TEMPLATE_TYPE && { subject_template_type: RESEND_SUBJECT_TEMPLATE_TYPE }),
-      ...(RESEND_BODY_TEMPLATE_TYPE && { body_template_type: RESEND_BODY_TEMPLATE_TYPE }),
-    }
+{
+  resolve: `medusa-plugin-resend`,
+  options: {
+    api_key: RESEND_API_KEY,
+    from: RESEND_FROM,
+    template_path: RESEND_TEMPLATE_PATH,
+    order_placed_template: process.env.RESEND_ORDER_PLACED || 'order-placed',
+    order_canceled_template: process.env.RESEND_ORDER_CANCELED || 'order-canceled',
+    order_shipped_template: process.env.RESEND_ORDER_SHIPPED || 'order-shipped',
+    order_paid_template: process.env.RESEND_ORDER_PAID || 'order-paid',
+    customer_password_reset_template: process.env.RESEND_CUSTOMER_PASSWORD_RESET || 'customer-password-reset',
+    customer_confirmation_template: process.env.RESEND_CUSTOMER_CONFIRMATION || 'customer-confirmation',
+    user_password_reset_template: process.env.RESEND_USER_PASSWORD_RESET || 'user-password-reset',
+    user_invite_template: process.env.RESEND_USER_INVITE || 'user-invite',
+    gift_card_created_template: process.env.RESEND_GIFT_CARD_CREATED || 'gift-card-created',
+    ...(RESEND_ENABLE_ENDPOINT && { enable_endpoint: RESEND_ENABLE_ENDPOINT }),
+    ...(RESEND_SUBJECT_TEMPLATE_TYPE && { subject_template_type: RESEND_SUBJECT_TEMPLATE_TYPE }),
+    ...(RESEND_BODY_TEMPLATE_TYPE && { body_template_type: RESEND_BODY_TEMPLATE_TYPE }),
   },
+},
   // File service storage - the LAST plugin declared will be used
   {
     resolve: `medusa-file-s3`,
